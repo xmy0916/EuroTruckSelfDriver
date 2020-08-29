@@ -40,7 +40,8 @@ def train_reader(train_list_path, crop_size, resize_size):
             np.random.shuffle(lines)
             # 开始获取每张图像和标签
             for line in lines:
-                img, label = line.split(' ')
+                img = line.split(' ')[0]
+                label = line.split(' ')[1:2]
                 img = os.path.join(father_path, img)
                 yield img, label, crop_size, resize_size
 
@@ -69,7 +70,8 @@ def test_reader(test_list_path, crop_size):
         with open(test_list_path, 'r') as f:
             lines = f.readlines()
             for line in lines:
-                img, label = line.split(' ')
+                img = line.split(' ')[0]
+                label = line.split(' ')[1:2]
                 img = os.path.join(father_path, img)
                 yield img, label, crop_size
 

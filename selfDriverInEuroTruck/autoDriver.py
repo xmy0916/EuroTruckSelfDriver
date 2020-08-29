@@ -12,7 +12,7 @@ exe = fluid.Executor(place)
 exe.run(fluid.default_startup_program())
 [infer_program, feeded_var_names, target_var] = fluid.io.load_inference_model(dirname="./model_infer/", executor=exe)
 
-def control(ang):
+def control(ang,brake):
     if ang > 60:
         ang = 60
     if ang < -60:
@@ -20,7 +20,7 @@ def control(ang):
     global j
     x = ang / 180 + 0.5
     j.data.wAxisX = int(x * 32767)
-    j.data.wAxisY = int(0 * 32767)
+    j.data.wAxisY = int(brake * 32767)
     j.data.wAxisZ = 0
     j.update()
 
@@ -45,7 +45,8 @@ def get_img():
         img = img_process(imm)
         result = exe.run(program=infer_program, feed={feeded_var_names[0]: img}, fetch_list=target_var)
         angle = result[0][0][0]
-        control(angle)
+        brake = result[0][0][1] / 10
+        control(angle,brake)
         print("angle:", angle)
         cv2.imshow('image', imm)  # 显示
         cv2.waitKey(3)

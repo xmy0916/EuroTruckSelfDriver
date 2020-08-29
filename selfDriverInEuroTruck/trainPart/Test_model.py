@@ -1,13 +1,7 @@
 # -*- coding:utf-8 -*-
-import sys, select, termios, tty
-import os
-import time
-import threading
-from ctypes import *
 import numpy as np
-import cv2 
-from sys import argv
-import math
+import cv2
+
 
 
 import paddle.fluid as fluid
@@ -25,7 +19,7 @@ def img_process(path):
     img = img.transpose((2, 0, 1))
     # 转换成BGR
     img = img[(2, 1, 0), :, :] / 255.0
-    img = np.expand_dims(img, axis=0) 
+    img = np.expand_dims(img, axis=0)
     return img
 
 
@@ -34,7 +28,7 @@ if __name__ == "__main__":
     place = fluid.CUDAPlace(0)
     exe = fluid.Executor(place)
     exe.run(fluid.default_startup_program())
-    [infer_program, feeded_var_names, target_var] = fluid.io.load_inference_model(dirname="/home/aistudio/work/model_infer/", executor=exe)
+    [infer_program, feeded_var_names, target_var] = fluid.io.load_inference_model(dirname="../model_infer/", executor=exe)
 
     with open("test_data.txt",'r') as t:
         all_lines = t.readlines()
@@ -44,5 +38,6 @@ if __name__ == "__main__":
 
             img = img_process(imgPath)
             result = exe.run(program=infer_program,feed={feeded_var_names[0]: img},fetch_list=target_var)
-            angle = result[0][0][0]
-            print("name:%s pre:%.5f true:%.5f"%(imgPath,angle,ang))
+            print(result[0][0])
+            #angle = result[0][0][0]
+            #print("name:%s pre:%.5f true:%.5f"%(imgPath,angle,ang))

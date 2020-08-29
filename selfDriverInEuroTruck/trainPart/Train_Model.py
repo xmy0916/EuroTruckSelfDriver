@@ -16,20 +16,16 @@ from sys import argv
 import getopt
 import matplotlib.pyplot as plt
 
-#script, save_path = argv
 
 
 path = os.path.split(os.path.realpath(__file__))[0]+"/.."
-#script, vels = argv
 opts,args = getopt.getopt(argv[1:],'-hH',['test_list=','train_list=','save_path='])
-#print(opts)
 
 test_list = "test_data.txt"
 train_list = "train_data.txt"
 save_path = "../model_infer"
 
 
-#camera = "/dev/video0"
 
 for opt_name,opt_value in opts:
     if opt_name in ('-h','-H'):
@@ -59,7 +55,7 @@ def draw_train_process(iters,train_costs):
     plt.title(title, fontsize=24)
     plt.xlabel("iter", fontsize=14)
     plt.ylabel("cost", fontsize=14)
-    plt.ylim(0, 2000)
+    plt.ylim(0, 100)
     plt.plot(iters, train_costs,color='red',label='training cost') 
     plt.grid()
     plt.savefig("filename.png")
@@ -71,7 +67,7 @@ resize_size = 120
 
 
 image = fluid.layers.data(name='image', shape=[3, crop_size, crop_size], dtype='float32')
-label = fluid.layers.data(name='label', shape=[1], dtype='float32')
+label = fluid.layers.data(name='label', shape=[2], dtype='float32')
 
 model = cnn_model.cnn_model(image)
 
@@ -132,7 +128,7 @@ for pass_id in range(100):
 
     #test_acc = (sum(test_accs) / len(test_accs))
     print('Test:%d, Cost:%0.5f' % (pass_id, test_cost))
-    #save_path = 'infer_model/'
+    save_path = '../model_infer'
     # 保存预测模型
 
     if min(all_test_cost) >= test_cost:

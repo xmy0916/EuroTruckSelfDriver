@@ -28,11 +28,12 @@ with open(data_path + "log.txt",'r') as logFile:
     with open(trainList, 'a') as f_train:
         with open(testList, 'a') as f_test:
             for index,_list in enumerate(_list):
-                ang = int(_list.split(" ")[-1])
+                ang = int(_list.split(" ")[1])
+                brake = float(_list.split(" ")[2]) * 10
                 img = _list.split(" ")[0]
                 if index % (int(10*ratio) + 1) == 0:
-                    f_test.write(img + " " + str(ang) + "\n")
+                    f_test.write(img + " " + str(ang) + " " + str(round(brake,2)) + "\n")
                 else:
-                    f_train.write(img + " " + str(ang) + "\n")
+                    f_train.write(img + " " + str(ang) + " " + str(round(brake,2)) + "\n")
 
     print("生成完毕，路径：" + testList + " | " +trainList)

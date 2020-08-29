@@ -15,7 +15,7 @@ def cnn_model(image):
     drop_fc1 = fluid.layers.dropout(fc1, dropout_prob=0.1)
     fc2 = fluid.layers.fc(input=drop_fc1, size=50, act=None)
     drop_fc2 = fluid.layers.dropout(fc2, dropout_prob=0.1)
-    predict = fluid.layers.fc(input=drop_fc2, size=1, act=None)
+    predict = fluid.layers.fc(input=drop_fc2, size=2, act=None)
     return predict
 
 
