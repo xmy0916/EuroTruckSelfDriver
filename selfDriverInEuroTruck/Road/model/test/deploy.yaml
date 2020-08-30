@@ -1,0 +1,15 @@
+DEPLOY:
+        USE_GPU : 1
+        MODEL_PATH : "freeze_model"
+        MODEL_FILENAME : "__model__"
+        PARAMS_FILENAME : "__params__"
+        EVAL_CROP_SIZE : (2049, 1025)
+        MEAN : [0.5, 0.5, 0.5]
+        STD : [0.5, 0.5, 0.5]
+        IMAGE_TYPE : "rgb"
+        NUM_CLASSES : 19
+        CHANNELS : 3
+        PRE_PROCESSOR : "SegPreProcessor"
+        PREDICTOR_MODE : "ANALYSIS"
+        BATCH_SIZE : 1
+    

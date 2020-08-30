@@ -47,7 +47,7 @@ def get_img():
         angle = result[0][0][0]
         brake = result[0][0][1] / 10
         control(angle,brake)
-        print("angle:", angle)
+        print("angle = %d  brake = %f" %(angle,brake))
         cv2.imshow('image', imm)  # 显示
         cv2.waitKey(3)
     cv2.destroyAllWindows()
