@@ -102,7 +102,7 @@ def get_angle():
 
 def get_img():
     global recordFlag,stopFlag,rect
-    imgpath = "./result/IMG/"
+    imgpath = "./dataset/IMG/"
     if not os.path.exists(imgpath):
         os.makedirs(imgpath)
     list2write = []
@@ -118,7 +118,7 @@ def get_img():
         cv2.waitKey(3)
 
     cv2.destroyAllWindows()
-    fwrite = open('./result/log.txt', 'w')
+    fwrite = open('./dataset/log.txt', 'w')
     for item in list2write:
         fwrite.write(item)
     fwrite.close()

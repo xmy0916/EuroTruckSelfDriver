@@ -4,6 +4,8 @@ from PIL import ImageGrab
 import numpy as np
 import threading
 import paddle.fluid as fluid
+from infer import Infer
+import time
 
 rect = (678, 671, 1078, 871)
 j = pyvjoy.VJoyDevice(1)
@@ -11,6 +13,15 @@ place = fluid.CUDAPlace(0)
 exe = fluid.Executor(place)
 exe.run(fluid.default_startup_program())
 [infer_program, feeded_var_names, target_var] = fluid.io.load_inference_model(dirname="./model_infer/", executor=exe)
+
+window = ImageGrab.grab()  # 获得当前屏幕,存窗口大小
+img = cv2.cvtColor(np.array(window), cv2.COLOR_RGB2BGR)  # 转为opencv的BGR格式
+width, height = window.size
+r = Infer(width, height, img)
+inf = Infer(width,height,img)
+
+segFlag = True # 是否是处理分割的图片
+
 
 def control(ang,brake):
     if ang > 60:
@@ -25,6 +36,8 @@ def control(ang,brake):
     j.update()
 
 def img_process(img):
+    if segFlag:
+        img = inf.infer_one_picture(img)
     # 统一图片大小
     img = cv2.resize(img,(120,120))
     # 把图片转换成numpy值

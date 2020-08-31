@@ -1,13 +1,14 @@
-import numpy as np
 import glob
 import os
 
+
 # 数据路径
-data_path = "./result/"
+data_path = "trainPart/dataset/"
 trainList = './train_data.txt'
 testList = './test_data.txt'
 # 多少比例用作训练集
 ratio = 0.8
+
 
 # 只读csv文件
 with open(data_path + "log.txt",'r') as logFile:

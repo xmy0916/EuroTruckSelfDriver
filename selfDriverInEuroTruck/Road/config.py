@@ -7,7 +7,12 @@ args.example = "Road"
 cfg = AttrDict()
 
 cfg.model = "2"
-cfg.mode = 1
+
+# mode0 不推理视屏流 mode1推理游戏截图视屏流 mode2推理本地视屏
+cfg.mode = 0
+
+cfg.use_gpu = True
+
 # 待预测图像所在路径
 cfg.data_dir = os.path.join(args.example , "data", "test_images")
 # 待预测图像名称列表

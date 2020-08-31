@@ -20,13 +20,9 @@ os.environ['FLAGS_eager_delete_tensor_gb'] = '0.0'
 
 import paddle.fluid as fluid
 
-class myRecord:
+class Infer:
     def __init__(self,width,height,imm):
         self.recordFlag = 0
-        self.data_dir = cfg.data_dir
-        self.data_list_file = cfg.data_list_file
-        self.data_list = self.get_data_list()
-        self.data_num = len(self.data_list)
         if not os.path.exists("config.txt"):
             os.system(r"touch {}".format("config.txt"))
         f = open('config.txt',"r")
@@ -45,6 +41,14 @@ class myRecord:
         self.j = pyvjoy.VJoyDevice(1)
         self.control(0)
 
+        # 使用GPU
+        self.place = fluid.CUDAPlace(0)
+        self.exe= fluid.Executor(self.place)
+
+        # 加载预测模型
+        self.test_prog, self.feed_name, self.fetch_list = fluid.io.load_inference_model(
+            dirname=cfg.model_path, executor=self.exe, params_filename='__params__')
+
         self.recordThread1 = threading.Thread(target=self.record)
         self.recordThread2 = threading.Thread(target=self.infer)
         self.recordThread3 = threading.Thread(target=self.infer_vedio)
@@ -53,7 +57,6 @@ class myRecord:
             self.recordThread2.start()
         elif cfg.mode == 2:
             self.recordThread3.start()
-        self.setDir("result/")
 
 
     def record(self):
@@ -97,24 +100,16 @@ class myRecord:
             os.makedirs(cfg.vis_dir)
         palette = get_palette(cfg.class_num)
 
-        # 使用GPU
-        cfg.use_gpu = True
-        place = fluid.CUDAPlace(0) if cfg.use_gpu else fluid.CPUPlace()
-        exe = fluid.Executor(place)
-
-        # 加载预测模型
-        test_prog, feed_name, fetch_list = fluid.io.load_inference_model(
-            dirname=cfg.model_path, executor=exe, params_filename='__params__')
-
         while True:
             # 数据获取
             ori_img = self.imm
+            src = self.imm
             image = self.preprocess(ori_img)
             im_shape = ori_img.shape[:2]
 
             #模型预测
             last_time = time.time()
-            result = exe.run(program=test_prog, feed={feed_name[0]: image}, fetch_list=fetch_list, return_numpy=True)
+            result = self.exe.run(program=self.test_prog, feed={self.feed_name[0]: image}, fetch_list=self.fetch_list, return_numpy=True)
             print("推理延迟：" + str(round(time.time() - last_time, 2)))
             parsing = np.argmax(result[0][0], axis=0)
             parsing = cv2.resize(parsing.astype(np.uint8), im_shape[::-1])
@@ -122,35 +117,21 @@ class myRecord:
             # 预测结果
             output_im = PILImage.fromarray(np.asarray(parsing, dtype=np.uint8))
             output_im.putpalette(palette)
-            arr = np.asarray(output_im)
-            # img2infer = cv2.cvtColor(arr, cv2.COLOR_RGB2BGR) # 用来推理的图像
-            # 推理的代码
+            arr_infer = np.asarray(output_im)
+            arr_src = np.asarray(src)
 
-            arr = np.where(arr == 13, 125, arr)
-            arr = np.where(arr == 0, 255, arr)
-            arr = np.where(arr < 30, 30, arr)
-            img = cv2.cvtColor(arr, cv2.COLOR_RGB2BGR)  # 用来显示的图片
-            cv2.imshow("cvPicture", img)
+            arr_src[np.where(arr_infer == 13)] = 125
+            arr_src[np.where(((arr_infer != 0) & (arr_infer != 13)))] = 255
+
+            #img = cv2.cvtColor(arr2, cv2.COLOR_RGB2BGR)  # 用来显示的图片
+            cv2.imshow("cvPicture", arr_src)
             cv2.waitKey(3)
 
 
 
     def infer_vedio(self):
-        if not os.path.exists(cfg.vis_dir):
-            os.makedirs(cfg.vis_dir)
         palette = get_palette(cfg.class_num)
-
-        cfg.use_gpu = True
-        place = fluid.CUDAPlace(0) if cfg.use_gpu else fluid.CPUPlace()
-        exe = fluid.Executor(place)
-
-        # 加载预测模型
-        test_prog, feed_name, fetch_list = fluid.io.load_inference_model(
-            dirname=cfg.model_path, executor=exe, params_filename='__params__')
-
         # 加载预测数据集
-        last_time = time.time()
-
         cap = cv2.VideoCapture("./vedio/record.avi")  # 打开视频
         size = (self.right-self.left,self.bottom-self.top)  # 需要转为视频的图片的尺寸
         fourcc = cv2.VideoWriter_fourcc(*'XVID')  # 编码格式
@@ -166,7 +147,7 @@ class myRecord:
 
             # HumanSeg,RoadLine模型单尺度预测
             start_time = time.time()
-            result = exe.run(program=test_prog, feed={feed_name[0]: image}, fetch_list=fetch_list, return_numpy=True)
+            result = self.exe.run(program=self.test_prog, feed={self.feed_name[0]: image}, fetch_list=self.fetch_list, return_numpy=True)
             print("推理延迟：" + str(round(time.time() - start_time, 2)))
             parsing = np.argmax(result[0][0], axis=0)
             parsing = cv2.resize(parsing.astype(np.uint8), im_shape[::-1])
@@ -181,6 +162,72 @@ class myRecord:
             cv2.waitKey(1)
 
 
+    def infer_pictures(self,readPath,savePath):
+        if cfg.mode != 0:
+            print("视屏流推理未关闭，seg处理同时将持续处理视屏流不会退出脚本，建议将selfDriverInEuroTruck/Road/config.py中mode改成0")
+            return
+        palette = get_palette(cfg.class_num)
+        img_list = os.listdir(readPath)
+        for item in img_list:
+            # 数据获取
+            print("处理" + item + "中")
+            ori_img = cv2.imread(readPath + item) # 用来处理的图
+            src = cv2.imread(readPath + item) # 存原图
+            image = self.preprocess(ori_img)
+            im_shape = ori_img.shape[:2]
+
+            # 模型预测
+            result = self.exe.run(program=self.test_prog, feed={self.feed_name[0]: image}, fetch_list=self.fetch_list,
+                             return_numpy=True)
+            parsing = np.argmax(result[0][0], axis=0)
+            parsing = cv2.resize(parsing.astype(np.uint8), im_shape[::-1])
+
+            # 预测结果
+            output_im = PILImage.fromarray(np.asarray(parsing, dtype=np.uint8))
+            output_im.putpalette(palette)
+            arr_infer = np.asarray(output_im)
+            arr_src = np.asarray(src)
+
+            # 覆盖原图
+            arr_src[np.where(arr_infer == 13)] = 125
+            arr_src[np.where(((arr_infer != 0) & (arr_infer != 13)))] = 255
+
+            # 写入本地
+            cv2.imwrite(savePath + item,arr_src)
+
+
+    def infer_one_picture(self,picture):
+        if cfg.mode != 0:
+            print("视屏流推理未关闭，seg单图片处理同时将持续处理视屏流影响速度，建议将selfDriverInEuroTruck/Road/config.py中mode改成0")
+            return
+        palette = get_palette(cfg.class_num)
+
+        # 数据获取
+        ori_img = picture # 用来处理的图
+        src = picture # 存原图
+        image = self.preprocess(ori_img)
+        im_shape = ori_img.shape[:2]
+
+        # 模型预测
+        result = self.exe.run(program=self.test_prog, feed={self.feed_name[0]: image}, fetch_list=self.fetch_list,
+                         return_numpy=True)
+        parsing = np.argmax(result[0][0], axis=0)
+        parsing = cv2.resize(parsing.astype(np.uint8), im_shape[::-1])
+
+        # 预测结果
+        output_im = PILImage.fromarray(np.asarray(parsing, dtype=np.uint8))
+        output_im.putpalette(palette)
+        arr_infer = np.asarray(output_im)
+        arr_src = np.asarray(src)
+
+        # 覆盖原图
+        arr_src[np.where(arr_infer == 13)] = 125
+        arr_src[np.where(((arr_infer != 0) & (arr_infer != 13)))] = 255
+
+        # 写入本地
+        return arr_src
+
+
     def setDir(self,filepath):
         if not os.path.exists(filepath):
             os.mkdir(filepath)
@@ -188,19 +235,6 @@ class myRecord:
             shutil.rmtree(filepath)
             os.mkdir(filepath)
 
-
-    def get_data_list(self):
-        # 获取预测图像路径列表
-        data_list = []
-        data_file_handler = open(self.data_list_file, 'r',encoding='utf-8')
-        for line in data_file_handler:
-            img_name = line.strip()
-            name_prefix = img_name.split('.')[0]
-            if len(img_name.split('.')) == 1:
-                img_name = img_name + '.jpg'
-            img_path = os.path.join(self.data_dir, img_name)
-            data_list.append(img_path)
-        return data_list
 
     def preprocess(self, img):
         # 图像预处理
@@ -274,4 +308,4 @@ if __name__ == "__main__":
     window = ImageGrab.grab()  # 获得当前屏幕,存窗口大小
     imm = cv2.cvtColor(np.array(window), cv2.COLOR_RGB2BGR)  # 转为opencv的BGR格式
     width,height = window.size
-    r = myRecord(width,height,imm)
+    r = Infer(width,height,imm)
