@@ -59,14 +59,29 @@ G刹车
 G刹车
 
 ### step4
+下载分割的模型：
+因为github提交文件大小受限制，模型文件我上传了百度网盘，下载地址：
+```bash
+链接：https://pan.baidu.com/s/1UI9H2DDqnHdYslkvAFHCpA 
+提取码：jtfe
+```
+文件下载后解压到：
+
+```bash
+EuroTruckSelfDriver/selfDriverInEuroTruck/Road/model/
+路径下替换已有的2和test文件夹。
+```
+
+### step5
 运行./segAndMakeList.py文件生成train_data.txt和test_data.txt，并且将图像转成分割处理的图像保存在dataset/IMG_Seg下。
 样式：
+
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20200831174105154.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM3NjY4NDM2,size_16,color_FFFFFF,t_70#pic_center)
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/2020083117411778.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM3NjY4NDM2,size_16,color_FFFFFF,t_70#pic_center)
 
-### step5
-运行trainPart/Train_Model.py开始训练，训练结束会自动保存在model_infer文件夹中。
 ### step6
+运行trainPart/Train_Model.py开始训练，训练结束会自动保存在model_infer文件夹中。
+### step7
 修改autoDriver.py第23行：segFlag = True设置成True为处理分割的模式自动驾驶
 运行autoDriver.py脚本开始自动驾驶。
 ！！！重要👇
