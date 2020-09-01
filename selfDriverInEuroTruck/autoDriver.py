@@ -7,7 +7,7 @@ import paddle.fluid as fluid
 from infer import Infer
 import time
 
-rect = (678, 671, 1078, 871)
+rect = (678, 350, 1078, 550)
 j = pyvjoy.VJoyDevice(1)
 place = fluid.CUDAPlace(0)
 exe = fluid.Executor(place)
@@ -20,7 +20,7 @@ width, height = window.size
 r = Infer(width, height, img)
 inf = Infer(width,height,img)
 
-segFlag = True # 是否是处理分割的图片
+segFlag = False # 是否是处理分割的图片
 
 
 def control(ang,brake):

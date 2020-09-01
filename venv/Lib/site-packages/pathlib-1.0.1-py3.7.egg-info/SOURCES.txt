@@ -1,0 +1,7 @@
+README.txt
+pathlib.py
+setup.py
+pathlib.egg-info/PKG-INFO
+pathlib.egg-info/SOURCES.txt
+pathlib.egg-info/dependency_links.txt
+pathlib.egg-info/top_level.txt

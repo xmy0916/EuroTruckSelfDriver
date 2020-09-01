@@ -9,7 +9,7 @@ import os
 
 angle = 0
 brake = 0.0
-rect = (678, 671, 1078, 871) # 捕获窗口大小
+rect = (678, 350, 1078, 550) # 捕获窗口大小
 j = pyvjoy.VJoyDevice(1)
 recordFlag = False
 stopFlag = False

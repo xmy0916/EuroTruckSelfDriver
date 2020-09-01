@@ -1,0 +1,35 @@
+Metadata-Version: 2.1
+Name: paddle-serving-client
+Version: 0.3.1
+Summary: Paddle Serving Package for saved model with PaddlePaddle
+Home-page: https://github.com/PaddlePaddle/Serving
+Author: PaddlePaddle Author
+Author-email: guru4elephant@gmail.com
+License: Apache 2.0
+Keywords: paddle-serving serving-client deployment industrial easy-to-use
+Platform: UNKNOWN
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Education
+Classifier: Intended Audience :: Science/Research
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Programming Language :: Python :: 2.7
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.4
+Classifier: Programming Language :: Python :: 3.5
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Topic :: Scientific/Engineering
+Classifier: Topic :: Scientific/Engineering :: Mathematics
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Classifier: Topic :: Software Development
+Classifier: Topic :: Software Development :: Libraries
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Requires-Dist: six (>=1.10.0)
+Requires-Dist: protobuf (>=3.1.0)
+Requires-Dist: numpy (>=1.12)
+Requires-Dist: grpcio (>=1.28.1)
+Requires-Dist: grpcio-tools (>=1.28.1)
+
+UNKNOWN
+
+

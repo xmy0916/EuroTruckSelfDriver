@@ -1,0 +1,6 @@
+..\__pycache__\pathlib.cpython-37.pyc
+..\pathlib.py
+PKG-INFO
+SOURCES.txt
+dependency_links.txt
+top_level.txt

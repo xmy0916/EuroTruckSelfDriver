@@ -1,0 +1,33 @@
+Metadata-Version: 2.1
+Name: paddlepaddle
+Version: 1.8.4
+Summary: Parallel Distributed Deep Learning
+Home-page: UNKNOWN
+Author: UNKNOWN
+Author-email: UNKNOWN
+License: UNKNOWN
+Platform: UNKNOWN
+Requires-Dist: requests (>=2.20.0)
+Requires-Dist: protobuf (>=3.1.0)
+Requires-Dist: gast (>=0.3.3)
+Requires-Dist: rarfile
+Requires-Dist: Pillow
+Requires-Dist: graphviz
+Requires-Dist: six
+Requires-Dist: funcsigs
+Requires-Dist: pyyaml
+Requires-Dist: decorator
+Requires-Dist: prettytable
+Requires-Dist: objgraph
+Requires-Dist: astor
+Requires-Dist: pathlib
+Requires-Dist: opencv-python
+Requires-Dist: scipy (<=1.3.1) ; python_version == "3.5"
+Requires-Dist: scipy ; python_version > "3.5"
+Requires-Dist: numpy (>=1.12) ; python_version >= "3.5"
+Requires-Dist: nltk ; python_version >= "3.5"
+Requires-Dist: matplotlib ; python_version >= "3.6"
+
+UNKNOWN
+
+

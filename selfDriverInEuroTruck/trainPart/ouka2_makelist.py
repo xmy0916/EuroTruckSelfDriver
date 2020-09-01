@@ -3,7 +3,7 @@ import os
 
 
 # 数据路径
-data_path = "trainPart/dataset/"
+data_path = "./dataset/"
 trainList = './train_data.txt'
 testList = './test_data.txt'
 # 多少比例用作训练集
