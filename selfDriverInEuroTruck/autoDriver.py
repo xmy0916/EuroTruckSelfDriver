@@ -7,6 +7,7 @@ import paddle.fluid as fluid
 from infer import Infer
 import time
 
+segFlag = False # 是否是处理分割的图片
 rect = (678, 350, 1078, 550)
 j = pyvjoy.VJoyDevice(1)
 place = fluid.CUDAPlace(0)
@@ -17,10 +18,7 @@ exe.run(fluid.default_startup_program())
 window = ImageGrab.grab()  # 获得当前屏幕,存窗口大小
 img = cv2.cvtColor(np.array(window), cv2.COLOR_RGB2BGR)  # 转为opencv的BGR格式
 width, height = window.size
-r = Infer(width, height, img)
-inf = Infer(width,height,img)
-
-segFlag = False # 是否是处理分割的图片
+inf = Infer(width,height,img) if segFlag else None
 
 
 def control(ang,brake):
@@ -31,7 +29,7 @@ def control(ang,brake):
     global j
     x = ang / 180 + 0.5
     j.data.wAxisX = int(x * 32767)
-    j.data.wAxisY = int(brake * 32767)
+    j.data.wAxisY = int(0.2 * 32767)
     j.data.wAxisZ = 0
     j.update()
 
@@ -60,7 +58,8 @@ def get_img():
         angle = result[0][0][0]
         brake = result[0][0][1] / 10
         control(angle,brake)
-        print("angle = %d  brake = %f" %(angle,brake))
+        print("angle = %f" %(angle))
+        # print("angle = %d  brake = %f" %(angle,brake))
         cv2.imshow('image', imm)  # 显示
         cv2.waitKey(3)
     cv2.destroyAllWindows()

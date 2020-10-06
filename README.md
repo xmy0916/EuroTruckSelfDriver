@@ -35,11 +35,12 @@
 G刹车
 
 ### step4
+运行trainPart/analyze_data.py文件将数据集均匀化，因为自己录制数据角度为0的较多，随机舍弃一些同时数据增强补充一些
 运行trainPart/ouka2_makelist.py文件生成train_data.txt和test_data.txt。
 ### step5
 运行trainPart/Train_Model.py开始训练，训练结束会自动保存在model_infer文件夹中。
 ### step6
-修改autoDriver.py第23行：segFlag = False设置成False为处理普通图像的模式自动驾驶
+修改autoDriver.py第10行：segFlag = False设置成False为处理普通图像的模式自动驾驶
 运行autoDriver.py脚本开始自动驾驶。
 ！！！重要👇
 >脚本运行后会有opencv的窗口出现，需要调整你的游戏界面使得窗口内的图像是你的车窗视角
@@ -73,6 +74,7 @@ EuroTruckSelfDriver/selfDriverInEuroTruck/Road/model/
 ```
 
 ### step5
+运行trainPart/analyze_data.py文件将数据集均匀化，因为自己录制数据角度为0的较多，随机舍弃一些同时数据增强补充一些
 运行./segAndMakeList.py文件生成train_data.txt和test_data.txt，并且将图像转成分割处理的图像保存在dataset/IMG_Seg下。
 样式：
 
@@ -82,7 +84,7 @@ EuroTruckSelfDriver/selfDriverInEuroTruck/Road/model/
 ### step6
 运行trainPart/Train_Model.py开始训练，训练结束会自动保存在model_infer文件夹中。
 ### step7
-修改autoDriver.py第23行：segFlag = True设置成True为处理分割的模式自动驾驶
+修改autoDriver.py第10行：segFlag = True设置成True为处理分割的模式自动驾驶
 运行autoDriver.py脚本开始自动驾驶。
 ！！！重要👇
 >脚本运行后会有opencv的窗口出现，需要调整你的游戏界面使得窗口内的图像是你的车窗视角

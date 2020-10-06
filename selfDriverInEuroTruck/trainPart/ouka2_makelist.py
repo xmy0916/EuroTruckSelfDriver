@@ -11,14 +11,14 @@ ratio = 0.8
 
 
 # 只读csv文件
-with open(data_path + "log.txt",'r') as logFile:
+with open(data_path + "log_remap.txt",'r') as logFile:
     _list = logFile.readlines()
 
     # 判断图片数是否匹配
-    ls_imgs = glob.glob(data_path + 'IMG/*.jpg')
-    print(len(ls_imgs))
-    print(len(_list))
-    assert len(ls_imgs) == len(_list),'number of images does not match'
+    # ls_imgs = glob.glob(data_path + 'IMG/*.jpg')
+    # print(len(ls_imgs))
+    # print(len(_list))
+    # assert len(ls_imgs) == len(_list),'number of images does not match'
 
 
     if (os.path.exists(trainList)):

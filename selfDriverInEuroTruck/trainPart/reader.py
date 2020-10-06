@@ -41,7 +41,8 @@ def train_reader(train_list_path, crop_size, resize_size):
             # 开始获取每张图像和标签
             for line in lines:
                 img = line.split(' ')[0]
-                label = line.split(' ')[1:2]
+                label = line.split(' ')[1:3]
+                label[1] = label[1].replace("\n","")
                 img = os.path.join(father_path, img)
                 yield img, label, crop_size, resize_size
 

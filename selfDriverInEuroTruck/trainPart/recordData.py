@@ -22,7 +22,7 @@ def control(ang,brake):
     global j
     x = ang / 180 + 0.5
     j.data.wAxisX = int(x * 32767)
-    j.data.wAxisY = int(brake * 32767) # 0改成0.4可以低速运行
+    j.data.wAxisY = int(brake * 32767) # brake改成0.4可以低速运行
     j.data.wAxisZ = 0
     j.update()
 
@@ -30,7 +30,7 @@ def get_angle():
     key1 = ord('U')
     key2 = ord('I')
     key5 = ord('G')
-    key3 = ord('O')
+    key3 = ord('Y')
     key4 = ord('B')
     global recordFlag,stopFlag
 
@@ -38,7 +38,7 @@ def get_angle():
     def isKeyPressed(key):
         return (win32api.GetKeyState(key) & (1 << 7)) != 0
 
-    print("INFO:\n按键‘O’开始录制\n按键‘B’退出录制并写入log\n未开始录制时按键a d控制方向盘\n开启录制后按键u i控制方向盘\nG刹车")
+    print("INFO:\n按键‘Y’开始录制\n按键‘B’退出录制并写入log\n未开始录制时按键a d控制方向盘\n开启录制后按键u i控制方向盘\nG刹车")
     while not isKeyPressed(key3):
         time.sleep(0.01)
 
